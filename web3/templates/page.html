@@ -1,0 +1,50 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<title> {{ title }} </title>
+</head>
+
+<body>
+<svg height="1000px" width="800px">
+
+</svg>
+
+<h1> My name is {{ name }} </h1>
+</body>
+<script>
+var year = 2000;
+
+var xScale = d3.scaleLinear()
+.domain([0,100])
+.range([0, 750]);
+
+var yScale = d3.scaleLinear()
+.domain([0,100])
+.range([0,950]);
+
+
+$.get("/countries", function(response){
+var responseObj = JSON.parse(response);
+var g = d3.select("svg").selectAll("g").data(responseObj);
+
+
+
+var en = g.enter().append("g")
+.attr("transform",function(d){
+
+if(d && d.data && d.data.data1 && d.data.data2 && d.data.data1[year] && d.data.data2[year])
+return "translate("+ xScale(d.data.data1[year] )  + "," + yScale(d.data.data2[year]) +")"
+});
+
+var circle = en.append("circle")
+.attr("r",function(d){ return 15 })
+.attr("fill",function(d,i){ return i % 2 == 0 ? "red" : "blue" });
+
+en.append("text").text(function(d) { return d.name });
+
+});
+
+
+</script>
+</html>
